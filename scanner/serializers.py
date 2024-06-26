@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from django.conf import settings
-from .models import AircraftType, Airline, Country, Tariff, Airport, Reservation, Flight, FlightReservation
+from .models import AircraftType, Airline, Country, Tariff, Airport, Reservation, Flight, FlightReservation, User
 
 
 class AircraftTypeSerializer(serializers.ModelSerializer):
@@ -55,10 +54,27 @@ class FlightSerializer(serializers.ModelSerializer):
         fields = ['departure_airport_id', 'arrival_airport_id', 'airline_id', 'aircraft_type_id', 'tariff_id', 'departure_timestamp', 'arrival_timestamp']
 
 
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = 'ALL'
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
+
+    def create(self, validated_data):
+        instance = self.Meta.model(**validated_data)
+        if validated_data['password']:
+            instance.set_password(validated_data['password'])
+        instance.save()
+        return instance
+
 class FlightReservationSerializer(serializers.ModelSerializer):
     reservation_id = ReservationSerializer()
     flight_id = FlightSerializer()
+    user_id = UserSerializer()
 
     class Meta:
         model = FlightReservation
-        fields = ['reservation_id', 'flight_id']
+        fields = ['reservation_id', 'flight_id', 'user_id']

@@ -16,7 +16,13 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from scanner.views import CountriesList, TariffsList, AircraftTypesList, AirportsList, AirlinesList
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('ref/countries', CountriesList.as_view()),
+    path('ref/tariffs', TariffsList.as_view()),
+    path('ref/aircraft_types', AircraftTypesList.as_view()),
+    path('ref/airports', AirportsList.as_view()),
+    path('ref/airlines', AirlinesList.as_view()),
 ]
